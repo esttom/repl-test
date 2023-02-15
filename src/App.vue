@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue'
 import { Repl, ReplStore, File, compileFile } from '@vue/repl'
-import i18nCode from './template/i18n.js?raw'
+import i18nCode from './template/i18n.ts?raw'
 import mainCode from './template/main.vue?raw'
 import welcomeCode from './template/welcome.vue?raw'
 import '@vue/repl/style.css'
