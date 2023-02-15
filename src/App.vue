@@ -1,22 +1,28 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue'
 import { Repl, ReplStore, File, compileFile } from '@vue/repl'
+import { atou } from './utils'
 import i18nCode from './template/i18n.ts?raw'
 import mainCode from './template/main.vue?raw'
 import welcomeCode from './template/welcome.vue?raw'
 import '@vue/repl/style.css'
 
-const query = new URLSearchParams(location.search)
+const serializedState = location.hash.slice(1)
 
-const store = new ReplStore({
-  serializedState: location.hash.slice(1),
-  showOutput: query.has('showOutput'),
-  outputMode: (query.get('outputMode') || 'preview'),
-})
+const store = new ReplStore()
 
 store.state.files['i18n.ts'] = new File('i18n.ts', i18nCode, true)
 store.state.files['Main.vue'] = new File('Main.vue', mainCode, true)
-store.state.files['App.vue'] = new File('App.vue', welcomeCode)
+if (serializedState) {
+  const saved = JSON.parse(atou(serializedState))
+  for (const [filename, file] of Object.entries(saved)) {
+    if (filename === '_o') continue
+    store.state.files[filename] = new File(filename, file as string)
+  }
+} else {
+  store.state.files['App.vue'] = new File('App.vue', welcomeCode)
+}
+
 store.state.mainFile = 'Main.vue'
 for (const file of Object.values(store.state.files)) {
   compileFile(store, file)
