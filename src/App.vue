@@ -17,7 +17,7 @@ if (serializedState) {
   const saved = JSON.parse(atou(serializedState))
   for (const [filename, file] of Object.entries(saved)) {
     if (filename === '_o') continue
-    store.state.files[filename] = new File(filename, file as string)
+    store.state.files[filename] = new File(filename, file as string, filename.match(/i18n\.ts|Main\.vue/) !== null)
   }
 } else {
   store.state.files['App.vue'] = new File('App.vue', welcomeCode)
@@ -33,7 +33,7 @@ watchEffect(() => history.replaceState({}, '', store.serialize()))
 
 store.setImportMap({
   imports: {
-    'vue-i18n': 'https://unpkg.com/vue-i18n@9/dist/vue-i18n.esm-browser.js'
+    'vue-i18n': 'https://unpkg.com/vue-i18n@9/dist/vue-i18n.esm-browser.prod.js'
   }
 })
 </script>
